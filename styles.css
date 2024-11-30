@@ -42,6 +42,8 @@ body {
     font-family: var(--ffamily01);
     text-align: center;
     font-size: 3rem;
+
+    overflow: hidden;
 }
 
 
@@ -84,7 +86,7 @@ input:focus {
     outline: none;
 }
 
-.add-task {
+.add-task, .new-list {
     /* background-color: var(--azul); */
     background-color: var(--azul);
     border: none;
@@ -135,21 +137,30 @@ input:focus {
 
 
 
-.tasks-div {
+#list-section, #rooms-section {
+    height: 95%;
+}
+
+.tasks-div, .lists-div {
     /* background-color: var(--gris-claro); */
     background-color: var(--amarillo);
     border-radius: 1rem;
     width: 90%;
     height: fit-content;
     max-height: calc(100% - 13rem);
+    /* max-height: 50%; */
     margin: auto;
 
-    overflow-x: hidden;
+    overflow: hidden;
     overflow-y: scroll;
     scrollbar-width: thin;
     /* scrollbar-color: var(--azul) transparent; */
-    scrollbar-color: var(--verde-oscuro) transparent;
+    /* scrollbar-color: var(--verde-oscuro) transparent; */
     scrollbar-color: transparent transparent;
+}
+
+.tasks-list {
+    margin-left: 0.3rem;
 }
 
 .task {
@@ -172,7 +183,7 @@ input:focus {
     overflow-x: scroll;
     scrollbar-width: thin;
     /* scrollbar-color: var(--azul) transparent; */
-    scrollbar-color: var(--verde-oscuro) transparent;
+    scrollbar-color: transparent transparent;
 }
 
 .task-check-btn {
@@ -195,7 +206,7 @@ input:focus {
 .task-p {
     font-family: var(--ffamily01);
     font-weight: 900;
-    font-size: 3svh;
+    font-size: 2.5svh;
 }
 
 .task-delete-btn {
@@ -216,4 +227,82 @@ input:focus {
         border-color: transparent;
         background-color: transparent;
     }
+}
+
+.inlist-btns {
+    position: absolute;
+    bottom: 1rem;
+    width: 30rem;
+    max-width: 100svw;
+}
+
+.volver-btn {
+    float: right;
+    margin-right: 1rem;
+
+    background-color: var(--azul);
+    border: none;
+    padding: 1rem;
+    width: 6rem;
+    border-radius: 2rem 2rem 1rem;
+    border: 0.3rem solid var(--verde-oscuro);
+
+    font-family: var(--ffamily01);
+    font-size: 1rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.lists-div {
+    background-color: transparent;
+    height: fit-content;
+    max-height: calc(100% - 10rem);
+}
+
+.list {
+    list-style: none;
+    background-color: var(--amarillo);
+    padding-inline: 1rem;
+    margin-left: -2rem;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+/* .list * {
+    background-color: red;
+} */
+
+.list-name {
+    width: 60%;
+    font-family: var(--ffamily01);
+    font-size: 3svh;
+    text-decoration: underline;
+    /* font-weight: 900; */
+}
+
+.list-delete-btn {
+    background-color: var(--rojo);
+    /* width: 2rem; */
+    height: 2rem;
+    padding-inline: 1rem;
+    border-radius: 1.5rem;
+    border: none;
+    margin: auto 0;
+    font-weight: 900;
+    font-family: var(--ffamily01);
 }
