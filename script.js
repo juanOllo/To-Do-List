@@ -9,6 +9,9 @@ const newListBtn = document.querySelector(".new-list");
 const inputListName = document.querySelector(".input-list-name");
 const listsList = document.querySelector(".lists-list");
 
+const searchBtn = document.querySelector(".search-btn");
+const inputSearch = document.querySelector(".input-search");
+
 // localStorage.clear();
 
 let dataArr = JSON.parse(localStorage.getItem("data")) || [];
@@ -74,7 +77,6 @@ newListBtn.addEventListener("click", () => {
             showData();
             anim(listsList.children[0].children[0], "new-task-anim 0.5s ease-in-out 0s forwards");
             anim(listsList.children[0].children[1], "new-task-anim 0.5s ease-in-out 0s forwards");
-            // anim(listsList.children[0].children[2], "new-task-anim 0.5s ease-in-out 0s forwards");
         }, 180);
     }
 });
@@ -83,21 +85,20 @@ listsList.addEventListener("click", (e) => {
 
     if (e.target.classList.contains("list-delete-btn")) {
         if(confirm(`Borrar lista "${e.target.parentElement.children[0].textContent}" ?`)) {
-            // e.target.parentElement.remove();
-
             const indexToRemove = dataArr.findIndex((x) => x.listId === e.target.parentElement.id);
-            // console.log("data id type", typeof(dataArr[0].listId))
-            // console.log("index: ", indexToRemove);
-            // console.log("id: ", e.target.parentElement.id);
-            dataArr.splice(indexToRemove, 1);
-            // console.log("new dataArr: ", dataArr);
-
-            saveData();
-            showData();
+            anim(e.target.parentElement, "new-task-anim 0.5s ease-in-out 0s forwards reverse");
+            anim(e.target.parentElement.children[1], "new-task-anim 0.5s ease-in-out 0s forwards reverse");
+            setTimeout(() => {
+                dataArr.splice(indexToRemove, 1);
+    
+                saveData();
+                showData();
+            }, 500);
         }
     }
 
     if (e.target.classList.contains("child-toList")) {
+        inputSearch.value = "";
         roomsSection.style.display = "none";
         listSection.style.display = "block";
 
@@ -108,6 +109,7 @@ listsList.addEventListener("click", (e) => {
     }
 
     if (e.target.classList.contains("toList")) {
+        inputSearch.value = "";
         roomsSection.style.display = "none";
         listSection.style.display = "block";
 
@@ -131,6 +133,29 @@ listsList.addEventListener("click", (e) => {
 
 
 
+inputSearch.addEventListener("input", () => {
+    if(inputSearch.value !== ""){
+        const newListHtml = dataArr.filter((x) => x.listName.toLowerCase().includes(`${inputSearch.value.toLowerCase()}`)).map((x) => x.listHtml);
+        listsList.innerHTML = newListHtml.join().replaceAll(",", "");
+    } else {
+        listsList.innerHTML = dataArr.map(x => x.listHtml).join().replaceAll(",", "")
+    }
+    for(let l of document.querySelectorAll(".list")){
+        anim(l, "new-task-anim 0.5s ease-in-out 0s forwards");
+        anim(l.children[1], "new-task-anim 0.5s ease-in-out 0s forwards");
+    }
+})
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -139,8 +164,8 @@ listsList.addEventListener("click", (e) => {
 
 addTaskBtn.addEventListener("click", () => {
     if (inputTask.value !== "") {
-        // anim(inputTask, "add-task-anim-input 0.4s ease 0s forwards");
-        // anim(addTaskBtn ,"add-task-anim 0.4s ease 0s forwards");
+        anim(inputTask, "add-task-anim-input 0.4s ease 0s forwards");
+        anim(addTaskBtn ,"add-task-anim 0.4s ease 0s forwards");
         const taskP = inputTask.value;
         setTimeout(()=>{
             inputTask.value = "";
@@ -170,9 +195,16 @@ taskList.addEventListener("click", (e) => {
 
     if (e.target.classList.contains("task-delete-btn")) {
         if(confirm(`Borrar tarea "${dad.children[1].textContent}" ?`)) {
-            e.target.parentElement.remove();
-            dataArr[actualListIndex].tasksHtml = taskList.innerHTML;
-            saveData();
+
+            anim(e.target.parentElement, "new-task-anim 0.5s ease-in-out 0s forwards reverse");
+            anim(e.target.parentElement.children[0], "new-task-anim 0.5s ease-in-out 0s forwards reverse");
+            anim(e.target.parentElement.children[2], "new-task-anim 0.5s ease-in-out 0s forwards reverse");
+
+            setTimeout(() => {
+                e.target.parentElement.remove();
+                dataArr[actualListIndex].tasksHtml = taskList.innerHTML;
+                saveData();
+            }, 500);
         }
     }
 

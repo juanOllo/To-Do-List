@@ -89,7 +89,7 @@ input:focus {
 .add-task, .new-list {
     /* background-color: var(--azul); */
     background-color: var(--azul);
-    border: none;
+    /* border: none; */
     padding: 1rem;
     width: 6rem;
     /* width: 3rem;
@@ -266,9 +266,12 @@ input:focus {
 
 
 .lists-div {
+    /* background-color: red; */
     background-color: transparent;
     height: fit-content;
-    max-height: calc(100% - 10rem);
+    /* max-height: calc(100% - 14rem); */
+    max-height: calc(100% - 11rem);
+    border-radius: 0;
 }
 
 .list {
@@ -282,10 +285,6 @@ input:focus {
     display: flex;
     justify-content: space-between;
 }
-
-/* .list * {
-    background-color: red;
-} */
 
 .list-name {
     width: 60%;
@@ -305,4 +304,37 @@ input:focus {
     margin: auto 0;
     font-weight: 900;
     font-family: var(--ffamily01);
+}
+
+.input-search-span {
+    width: 30rem;
+    max-width: 100%;
+    margin-top: -1rem;
+    margin-bottom: 0.5rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* gap: 2rem; */
+}
+
+.input-search {
+    border-radius: 2rem;
+    text-align: center;
+    width: 6rem;
+    padding: 0.3rem;
+    border: none;
+}
+
+.input-search:focus {
+    /* padding: 1rem; */
+    animation: input-search-focus-anim 0.2s ease 0s forwards;
+}
+
+@keyframes input-search-focus-anim {
+    100%{
+        padding: 0.7rem;
+        width: 17rem;
+        margin-bottom: -0.8rem;
+    }
 }
