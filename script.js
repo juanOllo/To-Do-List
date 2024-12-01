@@ -97,23 +97,23 @@ listsList.addEventListener("click", (e) => {
         }
     }
 
-    if (e.target.classList.contains("child-toList")) {
+    if (e.target.classList.contains("toList") || e.target.classList.contains("child-toList")) {
+
+        const eventTarget = e.target.classList.contains("toList") ? e.target : e.target.parentElement;
+
         inputSearch.value = "";
         roomsSection.style.display = "none";
         listSection.style.display = "block";
 
-        actualListIndex = dataArr.findIndex((x) => x.listId === e.target.parentElement.id);
+        actualListIndex = dataArr.findIndex((x) => x.listId === eventTarget.id);
+
         listSection.children[0].textContent = dataArr[actualListIndex].listName;
-        // console.log("actualIndex es: ", actualListIndex);
-        showData();
-    }
 
-    if (e.target.classList.contains("toList")) {
-        inputSearch.value = "";
-        roomsSection.style.display = "none";
-        listSection.style.display = "block";
-
-        actualListIndex = dataArr.findIndex((x) => x.listId === e.target.id);
+        // if(dataArr.length > 1){
+        //     const removedlist = dataArr.splice(actualListIndex, 1);
+        //     dataArr.unshift(removedlist[0]);
+        //     saveData();
+        // }
         // console.log("actualIndex es: ", actualListIndex);
         showData();
     }
@@ -222,10 +222,18 @@ taskList.addEventListener("click", (e) => {
 });
 
 volverBtn.addEventListener("click", () => {
+    if(dataArr.length > 1){
+        const removedlist = dataArr.splice(actualListIndex, 1);
+        dataArr.unshift(removedlist[0]);
+        saveData();
+        showData();
+    };
+
     roomsSection.style.display = "block";
     listSection.style.display = "none";
     actualListIndex = -1;
     // showData();
+
 })
 
 
