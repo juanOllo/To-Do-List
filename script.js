@@ -29,7 +29,7 @@ function showData() {
         <li class="list toList" id="${list.listId}">
             <p class="list-name child-toList">${list.listName}</p>
             <button class="list-delete-btn">Eliminar</button>
-            <div class="count-tasks-div">
+            <div class="count-tasks-div child-toList">
                 <div class="task-check-btn-checked-inlist"></div>
                 <p><span class="list-p-tasks-count">${list.cantTasks - list.completedTasks}</span></p>
                 <div class="task-check-btn-checked-inlist task-check-btn-checked"></div>
