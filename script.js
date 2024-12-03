@@ -24,7 +24,20 @@ function saveData() {
 }
 
 function showData() {
-    listsList.innerHTML = localStorage.getItem("data") ? JSON.parse(localStorage.getItem("data")).reduce((acc, html) => acc + html.listHtml, "") : "";
+    // listsList.innerHTML = localStorage.getItem("data") ? JSON.parse(localStorage.getItem("data")).reduce((acc, html) => acc + html.listHtml, "") : "";
+    listsList.innerHTML = localStorage.getItem("data") ? JSON.parse(localStorage.getItem("data")).reduce((acc, list) => acc + `
+        <li class="list toList" id="${list.listId}">
+            <p class="list-name child-toList">${list.listName}</p>
+            <button class="list-delete-btn">Eliminar</button>
+            <div class="count-tasks-div">
+                <div class="task-check-btn-checked-inlist"></div>
+                <p><span class="list-p-tasks-count">${list.cantTasks - list.completedTasks}</span></p>
+                <div class="task-check-btn-checked-inlist task-check-btn-checked"></div>
+                <p> <span class="list-p-tasks-count">${list.completedTasks}</span></p>
+            </div>
+        </li>
+    `, "") : "";
+
     taskList.innerHTML = localStorage.getItem("data") && actualListIndex+1 ? JSON.parse(localStorage.getItem("data"))[actualListIndex].tasksHtml : "";;
 }
 
@@ -65,18 +78,23 @@ newListBtn.addEventListener("click", () => {
             const newList = {
                 listName: newListName,
                 listId: newListCode,
-                listHtml: ` <li class="list toList" id="${newListCode}">
-                                <p class="list-name child-toList">${newListName}</p>
-                                <button class="list-delete-btn">Eliminar</button>
-                            </li>
-                        `,
+                // listHtml: ` <li class="list toList" id="${newListCode}">
+                //                 <p class="list-name child-toList">${newListName}</p>
+                //                 <button class="list-delete-btn">Eliminar</button>
+                //             </li>
+                //         `,
                 tasksHtml: ``,
+                cantTasks: 0,
+                completedTasks: 0
             }
             dataArr.unshift(newList);
             saveData();
             showData();
             anim(listsList.children[0].children[0], "new-task-anim 0.5s ease-in-out 0s forwards");
             anim(listsList.children[0].children[1], "new-task-anim 0.5s ease-in-out 0s forwards");
+            anim(listsList.children[0].children[2], "new-task-anim 0.5s ease-in-out 0s forwards");
+            anim(listsList.children[0].children[2].children[0], "new-task-anim 0.5s ease-in-out 0s forwards");
+            anim(listsList.children[0].children[2].children[2], "new-task-anim 0.5s ease-in-out 0s forwards");
         }, 180);
     }
 });
@@ -88,6 +106,8 @@ listsList.addEventListener("click", (e) => {
             const indexToRemove = dataArr.findIndex((x) => x.listId === e.target.parentElement.id);
             anim(e.target.parentElement, "new-task-anim 0.5s ease-in-out 0s forwards reverse");
             anim(e.target.parentElement.children[1], "new-task-anim 0.5s ease-in-out 0s forwards reverse");
+            anim(e.target.parentElement.children[2].children[0], "new-task-anim 0.5s ease-in-out 0s forwards reverse");
+            anim(e.target.parentElement.children[2].children[2], "new-task-anim 0.5s ease-in-out 0s forwards reverse");
             setTimeout(() => {
                 dataArr.splice(indexToRemove, 1);
     
@@ -135,14 +155,40 @@ listsList.addEventListener("click", (e) => {
 
 inputSearch.addEventListener("input", () => {
     if(inputSearch.value !== ""){
-        const newListHtml = dataArr.filter((x) => x.listName.toLowerCase().includes(`${inputSearch.value.toLowerCase()}`)).map((x) => x.listHtml);
+        // const newListHtml = dataArr.filter((x) => x.listName.toLowerCase().includes(`${inputSearch.value.toLowerCase()}`)).map((x) => x.listHtml);
+        const newListHtml = dataArr.filter((x) => x.listName.toLowerCase().includes(`${inputSearch.value.toLowerCase()}`)).map((x) => `
+                <li class="list toList" id="${x.listId}">
+                    <p class="list-name child-toList">${x.listName}</p>
+                    <button class="list-delete-btn">Eliminar</button>
+                    <div class="count-tasks-div">
+                        <div class="task-check-btn-checked-inlist"></div>
+                        <p><span class="list-p-tasks-count">${x.cantTasks - x.completedTasks}</span></p>
+                        <div class="task-check-btn-checked-inlist task-check-btn-checked"></div>
+                        <p> <span class="list-p-tasks-count">${x.completedTasks}</span></p>
+                    </div>
+                </li>
+            `);
         listsList.innerHTML = newListHtml.join().replaceAll(",", "");
     } else {
-        listsList.innerHTML = dataArr.map(x => x.listHtml).join().replaceAll(",", "")
+        // listsList.innerHTML = dataArr.map(x => x.listHtml).join().replaceAll(",", "")
+        listsList.innerHTML = dataArr.map(x => `
+                <li class="list toList" id="${x.listId}">
+                    <p class="list-name child-toList">${x.listName}</p>
+                    <button class="list-delete-btn">Eliminar</button>
+                    <div class="count-tasks-div">
+                        <div class="task-check-btn-checked-inlist"></div>
+                        <p><span class="list-p-tasks-count">${x.cantTasks - x.completedTasks}</span></p>
+                        <div class="task-check-btn-checked-inlist task-check-btn-checked"></div>
+                        <p> <span class="list-p-tasks-count">${x.completedTasks}</span></p>
+                    </div>
+                </li>
+            `).join().replaceAll(",", "");
     }
     for(let l of document.querySelectorAll(".list")){
         anim(l, "new-task-anim 0.5s ease-in-out 0s forwards");
         anim(l.children[1], "new-task-anim 0.5s ease-in-out 0s forwards");
+        anim(l.children[2].children[0], "new-task-anim 0.5s ease-in-out 0s forwards");
+        anim(l.children[2].children[2], "new-task-anim 0.5s ease-in-out 0s forwards");
     }
 })
 
@@ -181,6 +227,8 @@ addTaskBtn.addEventListener("click", () => {
 
             dataArr[actualListIndex].tasksHtml = taskList.innerHTML;
 
+            dataArr[actualListIndex].cantTasks++;
+
             saveData();
             anim(taskList.children[0].children[0], "new-task-anim 0.5s ease-in-out 0s forwards");
             anim(taskList.children[0].children[1], "new-task-anim 0.5s ease-in-out 0s forwards");
@@ -203,6 +251,12 @@ taskList.addEventListener("click", (e) => {
             setTimeout(() => {
                 e.target.parentElement.remove();
                 dataArr[actualListIndex].tasksHtml = taskList.innerHTML;
+
+                dataArr[actualListIndex].cantTasks--;
+                if(e.target.parentElement.children[0].classList.contains("task-check-btn-checked")){
+                    dataArr[actualListIndex].completedTasks--;
+                }
+
                 saveData();
             }, 500);
         }
@@ -212,9 +266,11 @@ taskList.addEventListener("click", (e) => {
         if (e.target.classList.contains("task-check-btn-checked")) {
             e.target.classList.remove("task-check-btn-checked");
             dad.children[1].style.textDecoration = "none";
+            dataArr[actualListIndex].completedTasks--;
         } else {
             e.target.classList.add("task-check-btn-checked");
             dad.children[1].style.textDecoration = "line-through";
+            dataArr[actualListIndex].completedTasks++;
         }
         dataArr[actualListIndex].tasksHtml = taskList.innerHTML;
         saveData();
@@ -226,8 +282,9 @@ volverBtn.addEventListener("click", () => {
         const removedlist = dataArr.splice(actualListIndex, 1);
         dataArr.unshift(removedlist[0]);
         saveData();
-        showData();
     };
+
+    showData();
 
     roomsSection.style.display = "block";
     listSection.style.display = "none";
