@@ -15,8 +15,6 @@ const inputSearch = document.querySelector(".input-search");
 // localStorage.clear();
 
 let dataArr = JSON.parse(localStorage.getItem("data")) || [];
-let actualListIndex;
-
 showData();
 
 function saveData() {
@@ -24,21 +22,8 @@ function saveData() {
 }
 
 function showData() {
-    // listsList.innerHTML = localStorage.getItem("data") ? JSON.parse(localStorage.getItem("data")).reduce((acc, html) => acc + html.listHtml, "") : "";
-    listsList.innerHTML = localStorage.getItem("data") ? JSON.parse(localStorage.getItem("data")).reduce((acc, list) => acc + `
-        <li class="list toList" id="${list.listId}">
-            <p class="list-name child-toList">${list.listName}</p>
-            <button class="list-delete-btn">Eliminar</button>
-            <div class="count-tasks-div child-toList">
-                <div class="task-check-btn-checked-inlist"></div>
-                <p><span class="list-p-tasks-count">${list.cantTasks - list.completedTasks}</span></p>
-                <div class="task-check-btn-checked-inlist task-check-btn-checked"></div>
-                <p> <span class="list-p-tasks-count">${list.completedTasks}</span></p>
-            </div>
-        </li>
-    `, "") : "";
-
-    taskList.innerHTML = localStorage.getItem("data") && actualListIndex+1 ? JSON.parse(localStorage.getItem("data"))[actualListIndex].tasksHtml : "";;
+    listsList.innerHTML = localStorage.getItem("data") ? JSON.parse(localStorage.getItem("data")).reduce((acc, list) => acc + createListHtml(list), "") : "";
+    taskList.innerHTML = localStorage.getItem("data") && dataArr.length > 0 ? JSON.parse(localStorage.getItem("data"))[0].tasksHtml : "";
 }
 
 
@@ -78,11 +63,6 @@ newListBtn.addEventListener("click", () => {
             const newList = {
                 listName: newListName,
                 listId: newListCode,
-                // listHtml: ` <li class="list toList" id="${newListCode}">
-                //                 <p class="list-name child-toList">${newListName}</p>
-                //                 <button class="list-delete-btn">Eliminar</button>
-                //             </li>
-                //         `,
                 tasksHtml: ``,
                 cantTasks: 0,
                 completedTasks: 0
@@ -90,9 +70,8 @@ newListBtn.addEventListener("click", () => {
             dataArr.unshift(newList);
             saveData();
             showData();
-            anim(listsList.children[0].children[0], "new-task-anim 0.5s ease-in-out 0s forwards");
+            anim(listsList.children[0], "new-task-anim 0.5s ease-in-out 0s forwards");
             anim(listsList.children[0].children[1], "new-task-anim 0.5s ease-in-out 0s forwards");
-            anim(listsList.children[0].children[2], "new-task-anim 0.5s ease-in-out 0s forwards");
             anim(listsList.children[0].children[2].children[0], "new-task-anim 0.5s ease-in-out 0s forwards");
             anim(listsList.children[0].children[2].children[2], "new-task-anim 0.5s ease-in-out 0s forwards");
         }, 180);
@@ -125,16 +104,18 @@ listsList.addEventListener("click", (e) => {
         roomsSection.style.display = "none";
         listSection.style.display = "block";
 
-        actualListIndex = dataArr.findIndex((x) => x.listId === eventTarget.id);
+        const actualListIndex = dataArr.findIndex((x) => x.listId === eventTarget.id);
 
         listSection.children[0].textContent = dataArr[actualListIndex].listName;
 
-        // if(dataArr.length > 1){
-        //     const removedlist = dataArr.splice(actualListIndex, 1);
-        //     dataArr.unshift(removedlist[0]);
-        //     saveData();
-        // }
-        // console.log("actualIndex es: ", actualListIndex);
+        //  CADA VEZ QUE ENTRAS A UNA LISTA ESTA SE REUBICA EN EL INDEX 0 DEL ARRAY
+        //  ENTONCES A PARTIR D AHORA SIEMPRE TRABAJAS EN dataArr[0]
+        if(dataArr.length > 1){
+            const removedlist = dataArr.splice(actualListIndex, 1);
+            dataArr.unshift(removedlist[0]);
+            saveData();
+        }
+        // console.log("actualIndex es: ", 0);
         showData();
     }
 });
@@ -156,33 +137,11 @@ listsList.addEventListener("click", (e) => {
 inputSearch.addEventListener("input", () => {
     if(inputSearch.value !== ""){
         // const newListHtml = dataArr.filter((x) => x.listName.toLowerCase().includes(`${inputSearch.value.toLowerCase()}`)).map((x) => x.listHtml);
-        const newListHtml = dataArr.filter((x) => x.listName.toLowerCase().includes(`${inputSearch.value.toLowerCase()}`)).map((x) => `
-                <li class="list toList" id="${x.listId}">
-                    <p class="list-name child-toList">${x.listName}</p>
-                    <button class="list-delete-btn">Eliminar</button>
-                    <div class="count-tasks-div">
-                        <div class="task-check-btn-checked-inlist"></div>
-                        <p><span class="list-p-tasks-count">${x.cantTasks - x.completedTasks}</span></p>
-                        <div class="task-check-btn-checked-inlist task-check-btn-checked"></div>
-                        <p> <span class="list-p-tasks-count">${x.completedTasks}</span></p>
-                    </div>
-                </li>
-            `);
+        const newListHtml = dataArr.filter((x) => x.listName.toLowerCase().includes(`${inputSearch.value.toLowerCase()}`)).map((x) => createListHtml(x));
         listsList.innerHTML = newListHtml.join().replaceAll(",", "");
     } else {
         // listsList.innerHTML = dataArr.map(x => x.listHtml).join().replaceAll(",", "")
-        listsList.innerHTML = dataArr.map(x => `
-                <li class="list toList" id="${x.listId}">
-                    <p class="list-name child-toList">${x.listName}</p>
-                    <button class="list-delete-btn">Eliminar</button>
-                    <div class="count-tasks-div">
-                        <div class="task-check-btn-checked-inlist"></div>
-                        <p><span class="list-p-tasks-count">${x.cantTasks - x.completedTasks}</span></p>
-                        <div class="task-check-btn-checked-inlist task-check-btn-checked"></div>
-                        <p> <span class="list-p-tasks-count">${x.completedTasks}</span></p>
-                    </div>
-                </li>
-            `).join().replaceAll(",", "");
+        listsList.innerHTML = dataArr.map(x => createListHtml(x)).join().replaceAll(",", "");
     }
     for(let l of document.querySelectorAll(".list")){
         anim(l, "new-task-anim 0.5s ease-in-out 0s forwards");
@@ -225,9 +184,9 @@ addTaskBtn.addEventListener("click", () => {
                 </li>
             ` + taskList.innerHTML;
 
-            dataArr[actualListIndex].tasksHtml = taskList.innerHTML;
+            dataArr[0].tasksHtml = taskList.innerHTML;
 
-            dataArr[actualListIndex].cantTasks++;
+            dataArr[0].cantTasks++;
 
             saveData();
             anim(taskList.children[0].children[0], "new-task-anim 0.5s ease-in-out 0s forwards");
@@ -250,11 +209,11 @@ taskList.addEventListener("click", (e) => {
 
             setTimeout(() => {
                 e.target.parentElement.remove();
-                dataArr[actualListIndex].tasksHtml = taskList.innerHTML;
+                dataArr[0].tasksHtml = taskList.innerHTML;
 
-                dataArr[actualListIndex].cantTasks--;
+                dataArr[0].cantTasks--;
                 if(e.target.parentElement.children[0].classList.contains("task-check-btn-checked")){
-                    dataArr[actualListIndex].completedTasks--;
+                    dataArr[0].completedTasks--;
                 }
 
                 saveData();
@@ -266,31 +225,21 @@ taskList.addEventListener("click", (e) => {
         if (e.target.classList.contains("task-check-btn-checked")) {
             e.target.classList.remove("task-check-btn-checked");
             dad.children[1].style.textDecoration = "none";
-            dataArr[actualListIndex].completedTasks--;
+            dataArr[0].completedTasks--;
         } else {
             e.target.classList.add("task-check-btn-checked");
             dad.children[1].style.textDecoration = "line-through";
-            dataArr[actualListIndex].completedTasks++;
+            dataArr[0].completedTasks++;
         }
-        dataArr[actualListIndex].tasksHtml = taskList.innerHTML;
+        dataArr[0].tasksHtml = taskList.innerHTML;
         saveData();
     }
 });
 
 volverBtn.addEventListener("click", () => {
-    if(dataArr.length > 1){
-        const removedlist = dataArr.splice(actualListIndex, 1);
-        dataArr.unshift(removedlist[0]);
-        saveData();
-    };
-
-    showData();
-
     roomsSection.style.display = "block";
     listSection.style.display = "none";
-    actualListIndex = -1;
-    // showData();
-
+    showData();
 })
 
 
@@ -324,4 +273,19 @@ function generarCódigoAleatorio(longitud) {
       código += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
     }
     return código;
+}
+
+function createListHtml(listData) {
+    return `
+                <li class="list toList" id="${listData.listId}">
+                    <p class="list-name child-toList">${listData.listName}</p>
+                    <button class="list-delete-btn">Eliminar</button>
+                    <div class="count-tasks-div child-toList">
+                        <div class="task-check-btn-checked-inlist"></div>
+                        <p><span class="list-p-tasks-count">${listData.cantTasks - listData.completedTasks}</span></p>
+                        <div class="task-check-btn-checked-inlist task-check-btn-checked"></div>
+                        <p> <span class="list-p-tasks-count">${listData.completedTasks}</span></p>
+                    </div>
+                </li>
+            `
 }
