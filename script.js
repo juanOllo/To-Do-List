@@ -45,11 +45,6 @@ function showData() {
 
 
 
-
-
-
-
-
 newListBtn.addEventListener("click", () => {
     if (inputListName.value !== "") {
         anim(inputListName, "add-task-anim-input 0.4s ease 0s forwards");
@@ -281,10 +276,10 @@ function createListHtml(listData) {
                     <p class="list-name child-toList">${listData.listName}</p>
                     <button class="list-delete-btn">Eliminar</button>
                     <div class="count-tasks-div child-toList">
-                        <div class="task-check-btn-checked-inlist"></div>
-                        <p><span class="list-p-tasks-count">${listData.cantTasks - listData.completedTasks}</span></p>
                         <div class="task-check-btn-checked-inlist task-check-btn-checked"></div>
                         <p> <span class="list-p-tasks-count">${listData.completedTasks}</span></p>
+                        <div class="task-check-btn-checked-inlist"></div>
+                        <p><span class="list-p-tasks-count">${listData.cantTasks - listData.completedTasks}</span></p>
                     </div>
                 </li>
             `
