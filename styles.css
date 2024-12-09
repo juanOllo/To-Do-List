@@ -347,6 +347,8 @@ input:focus {
 .count-tasks-div {
     /* background-color: blue; */
     width: 100%;
+    width: fit-content;
+    margin: 0 auto;
     height: 3rem;
     margin-top: -2rem;
 
